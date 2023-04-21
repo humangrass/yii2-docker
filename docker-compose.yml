@@ -1,0 +1,33 @@
+version: '3.2'
+
+services:
+
+  nginx:
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile-nginx
+    volumes:
+      - ./backend/web:/app/backend/web
+    ports:
+      - 80:80
+    depends_on:
+      - php-fpm
+      - mysql
+
+  php-fpm:
+    container_name: phpfpm
+    image: yiisoftware/yii2-php:8.1-fpm
+    volumes:
+      - ./:/app
+    depends_on:
+      - mysql
+
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=verysecret
+      - MYSQL_DATABASE=yii2advanced
+      - MYSQL_USER=yii2advanced
+      - MYSQL_PASSWORD=secret
